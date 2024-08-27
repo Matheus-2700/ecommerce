@@ -18,7 +18,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main Screen'),
+        title: Text('Git ADD '),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
