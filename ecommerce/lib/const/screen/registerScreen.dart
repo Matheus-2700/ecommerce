@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:ecommerce/controller/longinController.dart';
 import 'package:ecommerce/controller/userController.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       } catch (error) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $error')),
         );
