@@ -11,7 +11,6 @@ class LoginController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final RxBool isLoading = false.obs;
-
   Future<Database> get database async {
     return await DatabaseHelper.instance.database;
   }
@@ -19,7 +18,6 @@ class LoginController extends GetxController {
   Future<bool> loginUser() async {
     final email = emailController.text;
     final password = passwordController.text;
-
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar(
         'Erro',
@@ -28,10 +26,8 @@ class LoginController extends GetxController {
       );
       return false;
     }
-
     final user =
         await getUserByEmailAndPassword(email, _hashPassword(password));
-
     if (user != null) {
       _clearFields();
       return true;
@@ -42,13 +38,11 @@ class LoginController extends GetxController {
 
   Future<User?> getUserByEmailAndPassword(String email, String password) async {
     final db = await database;
-
     final maps = await db.query(
       'users',
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
-
     if (maps.isNotEmpty) {
       return User.fromMap(maps.first);
     }

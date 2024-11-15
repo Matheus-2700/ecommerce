@@ -1,12 +1,10 @@
 class Cart {
   final int id;
   final int productId;
-
   Cart({
     required this.id,
     required this.productId,
   });
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,

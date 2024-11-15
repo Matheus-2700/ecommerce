@@ -1,9 +1,11 @@
+import 'package:ecommerce/const/screen/cartScreen.dart';
 import 'package:ecommerce/controller/cartController.dart';
-import 'package:ecommerce/controller/loginController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
+  final CartController cartController = Get.put(CartController());
+
   final List<String> images = [
     'assets/images/beijinho.jpg',
     'assets/images/brigadeiro.jpg',
@@ -13,15 +15,14 @@ class HomeScreen extends StatelessWidget {
     'assets/images/nutela.jpg',
   ];
 
-  final List<double> imageHeights = [30, 60, 50, 40, 60, 60];
-  final List<double> imageWidths = [30, 60, 50, 40, 60, 60];
-
-  final CartController cartController =
-      Get.find(); // Obtém o controlador do carrinho
-  final ProductController productController =
-      Get.find(); // Obtém o controlador de produtos
-
-  HomeScreen({Key? key}) : super(key: key);
+  final List<String> productNames = [
+    'Beijinho',
+    'Brigadeiro',
+    'Casadinho',
+    'Coco',
+    'Damasco',
+    'Nutela',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -31,92 +32,91 @@ class HomeScreen extends StatelessWidget {
         title: const Text('DOCES'),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 230, 85, 131),
-      ),
-      body: Obx(() {
-        if (productController.products.isEmpty) {
-          return Center(
-              child:
-                  CircularProgressIndicator()); // Mostra um indicador de progresso enquanto os produtos carregam
-        }
-
-        return Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  'Bem vindo!!!',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'Escolha seus doces favoritos',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 2,
-                  mainAxisSpacing: 2,
-                  children:
-                      List.generate(productController.products.length, (index) {
-                    final product = productController.products[index];
-                    return GestureDetector(
-                      // Adicione GestureDetector para detectar cliques
-                      onTap: () {
-                        cartController
-                            .addToCart(product); // Adiciona o item ao carrinho
-                        Navigator.pushNamed(
-                            context, '/cart'); // Navega para a tela de carrinho
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(200),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  10), // Defina o raio desejado aqui
-                              child: SizedBox(
-                                height:
-                                    imageHeights[index % imageHeights.length],
-                                width: imageWidths[index % imageWidths.length],
-                                child: Image.asset(
-                                  images[index % images.length],
-                                  fit: BoxFit
-                                      .cover, // Ajusta a imagem ao tamanho do widget
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 30),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Get.to(() => CartScreen());
+            },
           ),
-        );
-      }),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                'Bem vindo!!!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Center(
+              child: Text(
+                'Escolha seus doces favoritos',
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 2,
+                mainAxisSpacing: 2,
+                children: List.generate(images.length, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      cartController.addToCart(productNames[index]);
+                      Get.snackbar(
+                        'Produto Adicionado',
+                        '${productNames[index]} foi adicionado ao carrinho.',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Image.asset(images[index]),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            productNames[index],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Get.to(() => CartScreen());
+        },
         backgroundColor: Colors.green,
-        child: const Icon(Icons.calendar_month),
+        child: const Icon(Icons.shopping_cart),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

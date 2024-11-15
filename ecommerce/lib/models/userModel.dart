@@ -4,14 +4,12 @@ class User {
   String email;
   String password;
   String? avatarUrl;
-
   User(
       {this.id,
       required this.name,
       required this.email,
       required this.password,
       this.avatarUrl});
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,

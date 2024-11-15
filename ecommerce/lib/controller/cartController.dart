@@ -1,50 +1,56 @@
 import 'package:get/get.dart';
-import 'package:ecommerce/models/cartItemModel.dart';
-import 'package:ecommerce/models/productModel.dart';
-import 'package:ecommerce/helper/databaseHelper.dart';
 
 class CartController extends GetxController {
-  var cartItems = <CartItem>[].obs;
+  // Especificação do tipo para o RxMap
+  var cartItems = <String, int>{}.obs; // Mapa de produtos e suas quantidades
+  final productPrices = {
+    'Beijinho': 1.50,
+    'Brigadeiro': 1.30,
+    'Casadinho': 1.80,
+    'Coco': 1.60,
+    'Damasco': 2.00,
+    'Nutela': 2.50,
+  };
 
-  // Carrega os itens do carrinho do banco de dados
-  Future<void> loadCartItems() async {
-    final db = await DatabaseHelper.instance.database;
-    final result = await db.query('cart_items');
-    cartItems.value = result.map((json) => CartItem.fromMap(json)).toList();
-  }
-
-  // Adiciona um item ao carrinho
-  void addToCart(Product product) {
-    var existingItem =
-        cartItems.firstWhereOrNull((item) => item.product.id == product.id);
-
-    if (existingItem != null) {
-      existingItem.quantity++;
+  // Adicionar item ao carrinho
+  void addToCart(String productName) {
+    if (cartItems.containsKey(productName)) {
+      cartItems[productName] = cartItems[productName]! + 1;
     } else {
-      cartItems.add(CartItem(product: product, quantity: 1));
+      cartItems[productName] = 1;
     }
-    // Save changes to the database as needed
   }
 
-  // Remove um item do carrinho
-  void removeFromCart(CartItem cartItem) {
-    if (cartItem.quantity > 1) {
-      cartItem.quantity--;
+  // Remover item (diminuir quantidade ou excluir completamente)
+  void removeFromCart(String productName) {
+    if (cartItems.containsKey(productName) && cartItems[productName]! > 1) {
+      cartItems[productName] = cartItems[productName]! - 1;
     } else {
-      cartItems.remove(cartItem);
+      cartItems.remove(productName);
     }
-    // Save changes to the database as needed
   }
 
-  // Limpa o carrinho
+  // Remover item completamente
+  void removeItem(String productName) {
+    cartItems.remove(productName);
+  }
+
+  // Limpar o carrinho
   void clearCart() {
     cartItems.clear();
-    // Save changes to the database as needed
   }
 
-  // Calcula o total do carrinho
+  // Calcular o preço total do carrinho
   double get totalPrice {
-    return cartItems.fold(
-        0, (sum, item) => sum + (item.product.price * item.quantity));
+    return cartItems.entries.fold(0.0, (sum, entry) {
+      final productName = entry.key;
+      final quantity = entry.value;
+
+      // Verificar se o preço existe para o produto
+      final price = productPrices[productName] ??
+          0.0; // Garantir que o preço nunca seja nulo
+
+      return sum + (price * quantity); // Soma o preço total
+    });
   }
 }

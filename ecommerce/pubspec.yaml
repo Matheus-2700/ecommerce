@@ -28,8 +28,12 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  table_calendar: ^3.0.8
+  qr_flutter: ^4.0.0
+  qr: ^3.0.2
   flutter:
     sdk: flutter
+    
   sqflite: ^2.0.0 
   get: ^4.6.6
   

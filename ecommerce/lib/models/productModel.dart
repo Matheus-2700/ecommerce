@@ -1,33 +1,32 @@
 class Product {
-  final int id;
+  final int? id;
   final String name;
-  final String description;
   final double price;
+  final String?
+      imagePath; // Adiciona o caminho da imagem como um campo opcional
 
-  Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.price,
-    required String imageUrl,
-  });
+  Product({this.id, required this.name, required this.price, this.imagePath});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'price': price,
-    };
-  }
-
+  // Atualize o método fromMap se estiver usando o SQLite
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
       id: map['id'],
       name: map['name'],
-      description: map['description'],
       price: map['price'],
-      imageUrl: '',
+      imagePath:
+          map['imagePath'], // Certifique-se de salvar o caminho da imagem
     );
+  }
+
+  String? get description => null;
+
+  // Atualize o método toMap se estiver usando o SQLite
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'imagePath': imagePath, // Certifique-se de salvar o caminho da imagem
+    };
   }
 }

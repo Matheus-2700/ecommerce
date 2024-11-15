@@ -1,6 +1,7 @@
-import 'package:ecommerce/controller/cartController.dart';
+import 'package:ecommerce/const/screen/calendarScree..dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ecommerce/controller/cartController.dart';
 
 class CartScreen extends StatelessWidget {
   final CartController cartController = Get.find();
@@ -9,44 +10,98 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carrinho'),
+        title: const Text('Carrinho'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 230, 85, 131),
       ),
       body: Obx(() {
-        return ListView.builder(
-          itemCount: cartController.cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cartController.cartItems[index];
-            return ListTile(
-              title: Text(cartItem.product.name),
-              subtitle: Text('Preço: R\$${cartItem.product.price}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: () {
-                      cartController.removeFromCart(cartItem);
-                    },
-                  ),
-                  Text('${cartItem.quantity}'), // Quantidade atual
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      cartController.addToCart(cartItem.product);
-                    },
-                  ),
-                ],
+        if (cartController.cartItems.isEmpty) {
+          return const Center(
+            child: Text(
+              'Seu carrinho está vazio!',
+              style: TextStyle(fontSize: 20),
+            ),
+          );
+        }
+        return ListView(
+          children: cartController.cartItems.keys.map((productName) {
+            final quantity = cartController.cartItems[productName]!;
+            final unitPrice = cartController.productPrices[productName]!;
+            final totalPrice = quantity * unitPrice;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: ListTile(
+                title: Text(productName),
+                subtitle: Text(
+                  'R\$ ${unitPrice.toStringAsFixed(2)} x $quantity = R\$ ${totalPrice.toStringAsFixed(2)}',
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {
+                        cartController.removeFromCart(productName);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        cartController.addToCart(productName);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        cartController.removeItem(productName);
+                        Get.snackbar(
+                          'Produto Removido',
+                          '$productName foi removido do carrinho.',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
-          },
+          }).toList(),
         );
       }),
       bottomNavigationBar: Obx(() {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'Total: R\$${cartController.totalPrice}',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Total: R\$ ${cartController.totalPrice.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (cartController.cartItems.isNotEmpty) {
+                    // Navega para a tela de agendamento
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PickupCalendarScreen(),
+                      ),
+                    );
+                  } else {
+                    Get.snackbar(
+                      'Carrinho vazio',
+                      'Adicione itens antes de finalizar o pedido!',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  }
+                },
+                child: const Text('Finalizar Pedido'),
+              ),
+            ],
           ),
         );
       }),

@@ -2,13 +2,11 @@ class Order {
   final int id;
   final List<CartItem> items;
   final DateTime date;
-
   Order({
     required this.id,
     required this.items,
     required this.date,
   });
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -28,6 +26,5 @@ class Order {
 
 class CartItem {
   get product => null;
-
   get quantity => null;
 }

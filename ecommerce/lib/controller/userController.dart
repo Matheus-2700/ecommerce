@@ -10,7 +10,6 @@ class UserController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
-
   Future<Database> get _database async {
     return await DatabaseHelper.instance.database;
   }
