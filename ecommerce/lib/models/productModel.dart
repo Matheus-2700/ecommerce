@@ -1,32 +1,38 @@
 class Product {
-  final int? id;
-  final String name;
-  final double price;
-  final String?
-      imagePath; // Adiciona o caminho da imagem como um campo opcional
+  final int?
+      id; // Identificador único do produto, pode ser null durante a criação
+  final String name; // Nome do produto
+  final double price; // Preço do produto
+  final String? imagePath; // Caminho da imagem do produto, pode ser null
 
-  Product({this.id, required this.name, required this.price, this.imagePath});
+  // Construtor da classe Product
+  Product({
+    this.id, // ID opcional
+    required this.name, // Nome obrigatório
+    required this.price, // Preço obrigatório
+    this.imagePath, // Caminho da imagem opcional
+  });
 
-  // Atualize o método fromMap se estiver usando o SQLite
+  // Construtor de fábrica que cria uma instância de Product a partir de um Map
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: map['id'],
-      name: map['name'],
-      price: map['price'],
-      imagePath:
-          map['imagePath'], // Certifique-se de salvar o caminho da imagem
+      id: map['id'], // ID do produto
+      name: map['name'], // Nome do produto
+      price: map['price'], // Preço do produto
+      imagePath: map['imagePath'], // Caminho da imagem do produto
     );
   }
 
-  String? get description => null;
+  String? get description =>
+      null; // Propriedade que retorna null, potencial para melhorias futuras
 
-  // Atualize o método toMap se estiver usando o SQLite
+  // Converte uma instância de Product para um Map
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'name': name,
-      'price': price,
-      'imagePath': imagePath, // Certifique-se de salvar o caminho da imagem
+      'id': id, // ID do produto
+      'name': name, // Nome do produto
+      'price': price, // Preço do produto
+      'imagePath': imagePath, // Caminho da imagem do produto
     };
   }
 }

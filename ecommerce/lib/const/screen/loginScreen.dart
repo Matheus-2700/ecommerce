@@ -1,4 +1,4 @@
-import 'package:ecommerce/controller/loginController.dart'; // Importa o controlador para login
+import 'package:ecommerce/controller/longinController.dart';
 import 'package:flutter/material.dart'; // Importa os pacotes necessários para o Flutter
 import 'package:get/get.dart'; // Importa o GetX para gerenciamento de estado e navegação
 

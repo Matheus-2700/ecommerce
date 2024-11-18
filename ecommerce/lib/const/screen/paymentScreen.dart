@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter/material.dart'; // Importa widgets do Flutter
+import 'package:get/get.dart'; // Importa o GetX para gerenciamento de estado
 
 class PaymentScreen extends StatelessWidget {
-  final DateTime selectedDate; //data
-  final TimeOfDay selectedTime; //hora
+  final DateTime selectedDate; // Data selecionada para retirada
+  final TimeOfDay selectedTime; // Hora selecionada para retirada
 
   const PaymentScreen({
     required this.selectedDate,
@@ -53,17 +53,18 @@ class PaymentScreen extends StatelessWidget {
               },
               child: const Text('PIX'), // Texto do botão de PIX
             ),
+            const SizedBox(height: 10),
             // Botão de pagamento via Dinheiro na Retirada
             ElevatedButton(
               onPressed: () {
                 // Exibe o diálogo de confirmação para o pagamento em dinheiro
                 Get.defaultDialog(
-                  title: 'Pedido Finalizado!',
+                  title: 'Pedido Finalizado!', // Título do diálogo
                   content: const Text(
                       'Você escolheu pagar com Dinheiro.\nObrigado por sua compra!'),
                   onConfirm: () =>
                       Get.offAllNamed('/home'), // Volta para a tela inicial
-                  textConfirm: 'OK',
+                  textConfirm: 'OK', // Texto do botão de confirmação
                 );
               },
               child: const Text(

@@ -1,29 +1,31 @@
-import 'package:ecommerce/controller/loginController.dart';
-import 'package:ecommerce/controller/userController.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:ecommerce/controller/longinController.dart';
+import 'package:ecommerce/controller/userController.dart'; // Importa o UserController
+import 'package:flutter/material.dart'; // Importa widgets do Flutter
+import 'package:get/get.dart'; // Importa o GetX para gerenciamento de estado
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>(); // Chave do formulário
-  final UserController controller =
-      Get.put(UserController(), permanent: true); // Usar permanent: true
-  bool _isLoading = false; // Controle do estado de carregamento
+  final _formKey = GlobalKey<FormState>(); // Chave global para o formulário
+  final UserController controller = Get.put(UserController(),
+      permanent:
+          true); // Inicializa o UserController e o mantém no sistema de injeção de dependência
+  bool _isLoading =
+      false; // Estado de carregamento para exibir um indicador de progresso
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Cor de fundo neutra
+      backgroundColor: Colors.white, // Define a cor de fundo da tela
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor:
-            Colors.blue, // Cor do appbar mais adequada para app de doces
-        centerTitle: true,
+        backgroundColor: Colors.blue, // Define a cor do appbar
+        centerTitle: true, // Centraliza o título do appbar
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -33,15 +35,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const SizedBox(height: 50), // Espaço extra no topo
-              _buildNameField(),
-              const SizedBox(height: 20),
-              _buildEmailField(),
-              const SizedBox(height: 20),
-              _buildPasswordField(),
-              const SizedBox(height: 40),
+              _buildNameField(), // Constrói o campo de nome
+              const SizedBox(height: 20), // Espaço vertical
+              _buildEmailField(), // Constrói o campo de e-mail
+              const SizedBox(height: 20), // Espaço vertical
+              _buildPasswordField(), // Constrói o campo de senha
+              const SizedBox(height: 40), // Espaço vertical maior
               _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _buildRegisterButton(),
+                  ? const Center(
+                      child:
+                          CircularProgressIndicator()) // Exibe um indicador de progresso se estiver carregando
+                  : _buildRegisterButton(), // Constrói o botão de registro
             ],
           ),
         ),
@@ -52,7 +56,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Função para criar o campo de nome
   Widget _buildNameField() {
     return TextFormField(
-      controller: controller.nameController,
+      controller: controller
+          .nameController, // Controlador de texto para o campo de nome
       decoration: InputDecoration(
         labelText: 'Name',
         hintText: 'Enter your name',
@@ -64,17 +69,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter your name';
+          return 'Please enter your name'; // Validação para campo vazio
         }
         return null;
       },
     );
   }
 
-  // Função para criar o campo de email
+  // Função para criar o campo de e-mail
   Widget _buildEmailField() {
     return TextFormField(
-      controller: controller.emailController,
+      controller: controller
+          .emailController, // Controlador de texto para o campo de e-mail
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'Enter your email',
@@ -84,12 +90,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      keyboardType: TextInputType.emailAddress,
+      keyboardType:
+          TextInputType.emailAddress, // Define o tipo de teclado para e-mail
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter an email';
+          return 'Please enter an email'; // Validação para campo vazio
         } else if (!GetUtils.isEmail(value)) {
-          return 'Invalid email format';
+          return 'Invalid email format'; // Validação para formato de e-mail inválido
         }
         return null;
       },
@@ -99,22 +106,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Função para criar o campo de senha
   Widget _buildPasswordField() {
     return TextFormField(
-      controller: controller.passwordController,
+      controller: controller
+          .passwordController, // Controlador de texto para o campo de senha
       decoration: InputDecoration(
         labelText: 'Password',
         hintText: 'Enter your password',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(30), // Bordas arredondadas
           borderSide: BorderSide(color: Colors.blueGrey),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      obscureText: true,
+      obscureText: true, // Oculta o texto da senha
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Please enter a password';
+          return 'Please enter a password'; // Validação para campo vazio
         } else if (value.length < 6) {
-          return 'Password must be at least 6 characters';
+          return 'Password must be at least 6 characters'; // Validação para senha curta
         }
         return null;
       },
@@ -124,9 +132,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Função para criar o botão de registro
   Widget _buildRegisterButton() {
     return ElevatedButton(
-      onPressed: _registerUser,
+      onPressed:
+          _registerUser, // Chama a função de registro ao pressionar o botão
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent, // Cor do botão
+        backgroundColor: Colors.blueAccent, // Define a cor do botão
         padding: const EdgeInsets.symmetric(vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Bordas arredondadas
@@ -143,27 +152,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true; // Mostrar o carregando enquanto registra
+        _isLoading = true; // Exibe o indicador de progresso durante o registro
       });
 
-      // Obtém os valores dos controladores
+      // Obtém os valores dos controladores de texto
       final name = controller.nameController.text;
       final email = controller.emailController.text;
       final password = controller.passwordController.text;
 
       try {
-        final usercontroller = UserController();
-        final userId = await usercontroller.insertUser(name, email, password);
+        final usercontroller = UserController(); // Instancia o UserController
+        final userId = await usercontroller.insertUser(
+            name, email, password); // Insere o usuário no banco de dados
         if (userId != 0) {
           // Login automático após o registro bem-sucedido
-          final logincontroller = LoginController();
-          await logincontroller.getUserByEmailAndPassword(email, password);
+          final logincontroller =
+              LoginController(); // Instancia o LoginController
+          await logincontroller.getUserByEmailAndPassword(
+              email, password); // Autentica o usuário
           // Redireciona para a tela inicial após o login bem-sucedido
           Navigator.pushReplacementNamed(context, '/home');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Registration failed. Email already in use?')),
+              content: Text('Registration failed. Email already in use?'),
+            ),
           );
         }
       } catch (error) {
@@ -173,7 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } finally {
         setState(() {
           _isLoading =
-              false; // Ocultar o carregando após a tentativa de registro
+              false; // Oculta o indicador de progresso após a tentativa de registro
         });
       }
     }
@@ -181,9 +194,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    controller.nameController.dispose();
-    controller.emailController.dispose();
-    controller.passwordController.dispose();
+    controller.nameController.dispose(); // Dispose do controlador de nome
+    controller.emailController.dispose(); // Dispose do controlador de e-mail
+    controller.passwordController.dispose(); // Dispose do controlador de senha
     super.dispose();
   }
 }

@@ -1,18 +1,21 @@
-import 'dart:io';
+import 'dart:io'; // Importa a biblioteca Dart para manipulação de arquivos e I/O
 
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path/path.dart'; // Importa o pacote 'path' para manipulação de caminhos de arquivos
+import 'package:sqflite/sqflite.dart'; // Importa o pacote 'sqflite' para operações de banco de dados SQLite
+import 'package:flutter/foundation.dart'
+    show
+        kIsWeb; // Importa a biblioteca Flutter para verificar se está rodando na web
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'; // Importa o pacote 'sqflite_common_ffi' para suporte a ambientes desktop
 
 class DatabaseHelper {
-  static const String _databaseName = 'app_database.db';
-  static const int _databaseVersion = 1;
+  static const String _databaseName =
+      'app_database.db'; // Nome do banco de dados
+  static const int _databaseVersion = 1; // Versão do banco de dados
 
-  // Instância única da classe
+  // Instância única da classe (singleton)
   static final DatabaseHelper instance = DatabaseHelper._();
 
-  // Database privado
+  // Banco de dados privado
   static Database? _database;
 
   // Construtor privado
@@ -35,23 +38,28 @@ class DatabaseHelper {
   void _initializeDatabaseFactory() {
     if (!kIsWeb &&
         (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
+      sqfliteFfiInit(); // Inicializa o suporte FFI para sqflite
+      databaseFactory =
+          databaseFactoryFfi; // Define o factory do banco de dados para sqflite_common_ffi
     }
   }
 
   // Inicializa e abre o banco de dados
   Future<Database> _initDatabase() async {
-    final dbPath = join(await getDatabasesPath(), _databaseName);
+    final dbPath = join(await getDatabasesPath(),
+        _databaseName); // Obtém o caminho completo do banco de dados
 
     return await openDatabase(
       dbPath,
       version: _databaseVersion,
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
+      onCreate:
+          _onCreate, // Chama o método _onCreate na criação do banco de dados
+      onUpgrade:
+          _onUpgrade, // Chama o método _onUpgrade para atualizações do banco de dados
     );
   }
 
+  // Método chamado na criação do banco de dados
   Future<void> _onCreate(Database db, int version) async {
     // Criação das tabelas
     await db.execute('''CREATE TABLE IF NOT EXISTS users (
